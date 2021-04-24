@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <div class="wrapper flex flex-col flex-grow">
+    <div v-if="logged" class="wrapper flex flex-col flex-grow">
       <section class="flex flex-row h-full overflow-hidden rounded-md">
+
         <aside class="w-1/6">
           <nav class="menu overflow-hidden">
             <ul>
@@ -26,6 +27,7 @@
         </main>
       </section>
     </div>
+    <Login v-else/>
   </div>
 </template>
 
@@ -71,24 +73,27 @@ export default {
     data() {
         return {
             active: 'dash',
+            logged: false,
             admin: 1,
             routerName: false,
             links: [
                 {
-                    text: 'Usuários',
-                    href: '/usuarios',
-                    icon: 'user',
-                    level: 1
-                },{
-                    text: 'Principal',
-                    href: '/dash',
-                    icon: 'home',
-                    level: 0
-                },{
-                    text: 'Login',
-                    href: '/login',
-                    icon: 'user-lock',
-                    level: 0
+                  text: 'Principal',
+                  href: '/dash',
+                  icon: 'home',
+                  level: 0
+                },
+                {
+                  text: 'Usuários',
+                  href: '/usuarios',
+                  icon: 'user',
+                  level: 1
+                },
+                {
+                  text: 'Login',
+                  href: '/login',
+                  icon: 'user-lock',
+                  level: 0
                 }
             ]
         }
@@ -96,6 +101,10 @@ export default {
 
     created() {
       this.setActiveMenu();    
+    },
+
+    components: {
+      Login: () => import('@/components/Login')
     },
 
     watch: {
@@ -107,6 +116,10 @@ export default {
     methods: {
       setActiveMenu() {
         this.routerName = this.$route.path;
+
+        document.title = this.$route.name;
+
+        console.log(this.$route)
       },
 
       allowAccess({ level }) {

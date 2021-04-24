@@ -70,9 +70,9 @@
 
         <span class="flex w-full flex-row-reverse pb-8">
             <Button v-on:click="modalOpen = true, modal_title = 'Novo usuário'">
-                <span class="px-4">
-                    Adicionar novo usuário
-                    <font-awesome-icon icon="times" />
+                <span class="px-4 space-x-2 flex items-center">
+                    <font-awesome-icon icon="user-plus" />
+                    <span>Adicionar novo usuário</span>
                 </span>
             </Button>
         </span>
@@ -81,13 +81,12 @@
             <li v-for="(user, i) in users" :key="i">
                 <div>{{user.name}}</div>
 
-                <div class="actions space-x-3">
-                    <Button className="px-3" variation="danger" v-on:click="openModalRemoveUser(user, i)">
-                        <font-awesome-icon icon="times" />
-                    </Button>
-                    
+                <div class="actions space-x-3">  
                     <Button className="px-3" v-on:click="openModalEditUser(user, i)">
                         <font-awesome-icon icon="edit" />
+                    </Button>
+                    <Button className="px-3" variation="danger" v-on:click="openModalRemoveUser(user, i)">
+                        <font-awesome-icon icon="times" />
                     </Button>
                 </div>
             </li>
