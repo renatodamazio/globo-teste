@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "api": "node server/index"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -13,13 +14,17 @@
     "@fortawesome/vue-fontawesome": "^2.0.2",
     "autoprefixer": "9",
     "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "firebase": "^8.4.2",
     "fusioncharts": "^3.16.0",
     "postcss": "7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "vue": "^2.6.11",
-    "vue-fusioncharts": "^3.1.0"
+    "vue-fusioncharts": "^3.1.0",
+    "vue-toast-notification": "^0.6.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

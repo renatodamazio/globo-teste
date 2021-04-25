@@ -9,7 +9,7 @@
             :placeholder="placeholder"
             :id='id'
             v-bind:value='value'
-            @input="$emit('input', $event.target.value)"
+            @change="$emit('input', $event.target.value)"
         />
     </div>
 </template>

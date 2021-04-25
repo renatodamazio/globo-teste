@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="openMenu ? 'open-menu' : ''">
     <div v-if="isLogged" class="wrapper flex flex-col flex-grow">
       <section class="flex flex-row h-full overflow-hidden rounded-md">
 
@@ -23,7 +23,16 @@
           </nav>
         </aside>
 
+        <div class="bg-mobile-aside" @click="openMenu = false"></div>
+
         <main class="main-section bg-white">
+          <header class="header">
+            <button @click="openMenu = true" class="lg:hidden">
+              <font-awesome-icon icon="bars" />
+            </button>
+            
+            <h1 class="page-title">{{ page }}</h1>
+          </header>
           <router-view></router-view>
         </main>
       </section>
@@ -33,9 +42,35 @@
 </template>
 
 <style lang="postcss" scoped>
+    .header {
+      @apply mb-3 border-gray-100 border-b-2 pb-4 flex space-x-4; 
+    }
+
+    .page-title {
+     @apply text-xl font-black text-blue-500; 
+    }
+
     aside {
       box-shadow: inset -3px 0px 15px #0000000d;
-      @apply bg-white flex-grow;
+      @apply fixed top-0 h-full left-0 w-0 z-50 bg-white transition duration-700;
+    }
+    
+    .open-menu aside {
+      @apply w-1/2;
+    }
+
+    @screen lg {
+      aside {
+        @apply relative top-0 left-0 w-1/4;
+      }
+    }
+
+    .bg-mobile-aside {
+      @apply w-full h-full bg-gray-800 z-40 bg-opacity-70 fixed top-0 left-0 opacity-0 transition invisible duration-500;
+    }
+
+    .open-menu .bg-mobile-aside {
+      @apply opacity-100 visible;
     }
 
     .main-section {
@@ -45,7 +80,13 @@
 
     .wrapper {
         height: 100vh;
-        @apply bg-blue-500 p-8;
+        @apply bg-blue-500 p-0;
+    }
+
+    @screen lg {
+      .wrapper { 
+        @apply p-8;
+      }
     }
 
     .menu ul,
@@ -76,6 +117,8 @@ export default {
             active: 'dash',
             isLogged: false,
             admin: 1,
+            openMenu: false,
+            page: 'Principal',
             routerName: false,
             links: [
                 {
@@ -129,8 +172,15 @@ export default {
       },
 
       setActiveMenu() {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        this.admin = user[0].accessLevel;
+
         this.routerName = this.$route.path;
         document.title = this.$route.name;
+        this.page = this.$route.name;
+
+        this.openMenu = false;
       },
 
       allowAccess({ level }) {

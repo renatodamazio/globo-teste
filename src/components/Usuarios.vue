@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="modal" :class="modalOpenRemoveUser ? 'modal-visible' : 'modal-hidden'">
-            <Card class="w-1/4 relative">
+            <Card class="lg:w-1/4 w-full relative">
                 <template slot:header>
                     <div class="p-2 w-full mb-3 border-b-2 font-black text-lg pt-4">
                         Remover Usuário
@@ -25,8 +25,8 @@
             </Card>
         </div>
 
-        <div class="modal" :class="modalOpen ? 'modal-visible' : 'modal-hidden'">
-            <Card class="w-1/4 relative">
+        <div class="modal" :class="modalOpen ? 'modal-visible' : 'modal-hidden'">            
+            <Card class="lg:w-1/4 w-full relative">
                 <template slot:header>
                     <div class="p-2 w-full mb-3 border-b-2 font-black text-lg py-4">
                         {{modal_title}}
@@ -40,19 +40,48 @@
                 </template>
 
                 <div class="p-2">
-                    <form @submit="register">
+                    <form @submit="save">                        
+                        <div v-if="errorMessage" class="text-red-800 bg-red-200 rounded-md mb-4 w-full px-3 py-2">
+                            {{errorMessage}}
+                        </div>
                         <FormInput 
                             label="Nome" 
                             type="text"
                             required
                             v-model="formValues.name"
                         />
+
                         <FormInput 
                             label="E-mail" 
                             type="email"
                             required
                             v-model="formValues.email"
                         />
+
+                        <fieldset class="w-full mb-4 flex flex-col">
+                            <label class="w-full mb-4 text-sm">Nível de acesso</label>
+                            <span class="flex space-x-4">    
+                                <FormRadio 
+                                    required="true" 
+                                    type="radio" 
+                                    name="access" 
+                                    id="admin"
+                                    defaultValue="1" 
+                                    v-model="formValues.accessLevel"
+                                    label="Administrador" 
+                                />
+                                
+                                <FormRadio 
+                                    required="true" 
+                                    type="radio" 
+                                    name="access"
+                                    defaultValue="0"
+                                    id="employee" 
+                                    v-model="formValues.accessLevel"
+                                    label="Funcionário" 
+                                />
+                            </span>
+                        </fieldset>
                         
                         <FormInput 
                             label="Senha" 
@@ -101,7 +130,7 @@
     </div>
 </template>
 <script>
-import firebase from 'firebase';
+import axios from 'axios';
 
 export default {
     data:() => ({
@@ -109,40 +138,48 @@ export default {
         modalOpenRemoveUser: false,
         modal_title: 'Novo usuário',
         selectedUser: '',
+        errorMessage: false,
         
         formValues: {
             name: '',
             password: '',
-            email: ''
+            email: '',
+            accessLevel: 0
         },
 
-        users: [
-            {
-                name: 'John Doe',
-                email: 'usuariocomum@teste.com.br',
-                access: '0',
-                password: '123mudar',
-            },
-            {
-                name: 'Lorem Ipsum',
-                email: 'usarioadm@teste.com.br',
-                access: '1',
-                password: '123mudar',
-            }
-        ]
+        users: []
     }),
 
     components: {
         FormInput: () => import('@/components/FormInput'),
         Card: () => import('@/components/Card'),
+        FormRadio: () => import('@/components/FormRadio'),
         Button: () => import('@/components/Button')
+    },
+
+    created() {
+        axios.get('http://localhost:3000/get-users')
+        .then(({ data }) => {
+            this.users = data;
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+    },
+
+    mounted() {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user[0].accessLevel != 1) {
+            return this.$router.push('/dash');
+        }
     },
 
     methods: {
         closeModal() {
             this.modalOpen = false;
             this.modalOpenRemoveUser = false;
-
+            this.errorMessage = false;
             this.cleanFormValues();
         },
 
@@ -165,44 +202,60 @@ export default {
             this.modalOpenRemoveUser = false;
         },
 
-        openModalEditUser(user, i) {
+        openModalEditUser(user) {
             this.modal_title = "Editar";
             this.formValues = Object.assign({}, user);
-            this.formValues.id = i;
             this.modalOpen = true;
-        },
-
-        register(e) {
-            e.preventDefault();
-
-            firebase
-                .auth()
-                .createUserWithEmailAndPassword(this.formValues.email, this.formValues.password)
-                .then(() => {
-                    alert("Successly register, plase login.");
-                })
-                .catch((err) => {
-                    alert(err.message)
-                })
         },
 
         save(e) {
             e.preventDefault();
+            
+            let url, action;
+
+            console.log(this.formValues);
 
             if ("id" in this.formValues) {
-            
-                this.users[this.formValues.id] = this.formValues;
-                this.modalOpen = false;
-            
+                url = 'http://localhost:3000/edit-user';
+                action = 'add';
             } else {
-                
-                const values = Object.assign({}, this.formValues);
-                this.users.push(values);
-                this.modalOpen = false;
-
+                url = 'http://localhost:3000/register-user';
+                action = 'save';
             }
 
-            this.cleanFormValues();
+            this.errorMessage = false;
+
+            axios.post(url, {...this.formValues })
+            .then(({ data }) => {
+
+                if (!data.success) {
+                    this.errorMessage = data.message;
+                    return;
+                }
+
+                if(action === 'add') {
+                    
+                    this.users[data.resp.id] = data.resp;
+
+                } else {
+
+                    this.users.push(data.resp);
+
+                }
+
+                this.$toast.open({
+                    message:  'Dados salvos com sucesso!',
+                    type: 'success',
+                    position: 'top',
+                    duration: 3000
+                });
+
+                this.modalOpen = false;
+
+                this.cleanFormValues();
+            })
+            .catch((err) => console.error(err));
+
         }
     }
 }
@@ -213,12 +266,8 @@ export default {
         @apply absolute top-0 right-0 p-2;
     }
 
-    .close-wrapper button {
-
-    }
-
     .modal {
-        @apply fixed w-full h-full flex items-center justify-center top-0 left-0 transition;
+        @apply fixed w-full h-full flex items-center justify-center top-0 left-0 transition px-4 z-50;
         backdrop-filter: blur(5px);
         background-color: rgba(0, 0, 0, 0.5);
     }

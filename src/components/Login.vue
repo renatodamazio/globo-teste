@@ -5,6 +5,8 @@
                 <h1 class="text-xl font-black">Login</h1>
                 
                 <hr class="my-4"/>
+                
+                <Message v-if="erroMessage" :message="erroMessage" />
 
                 <FormInput 
                     label="E-mail"
@@ -30,38 +32,47 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import axios from 'axios';
 
 export default {
     data() {
         return {
-            email: '',
-            password: '',
-            users: []
+            erroMessage: false,
+            email: 'usarioadm@teste.com.br',
+            password: '123mudar',
         }
     },
 
     components: {
         FormInput: () => import('./FormInput'),
         Button: () => import('./Button'),
-        Card: () => import('./Card')
-    },
-
-    mounted() {
-        
+        Card: () => import('./Card'),
+        Message: () => import('./Message')
     },
 
     methods: {
         handleSubmit() {
-            firebase
-                .auth()
-                .signInWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    alert("Success Logged.");
-                })
-                .catch((err) => {
-                    console.error(err)
-                })
+            axios.post('http://localhost:3000/login', {
+                email: this.email,
+                password: this.password
+            })
+            .then(({ data }) => {
+                if (data.success) {
+                
+                    localStorage.setItem('isLogged', true);
+                    localStorage.setItem('user', JSON.stringify(data.resp));
+                    this.$router.push('/dash');
+                    location.reload();
+                
+                } else {
+
+                    this.erroMessage = data.message;
+                
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
         }
     }
 }

@@ -39,7 +39,7 @@
 
         methods: {
             getApiData() {
-                axios.get(`https://run.mocky.io/v3/${this.apiurl}`)
+                axios.get(`http://localhost:3000/${this.apiurl}`)
                 .then(({ data }) => {
                     let dataSource = [];
 
