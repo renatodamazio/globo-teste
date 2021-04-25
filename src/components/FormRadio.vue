@@ -46,11 +46,11 @@
 
 <style lang="postcss" scoped>
     .input-element-choose {
-        @apply flex items-center space-x-1 cursor-pointer;
+        @apply flex items-center space-x-1 cursor-pointer relative;
     }
 
     .input-element-choose input {
-        @apply hidden;
+        @apply invisible absolute left-0;
     }
 
     .choose {

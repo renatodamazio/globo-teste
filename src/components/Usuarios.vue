@@ -44,6 +44,9 @@
                         <div v-if="errorMessage" class="text-red-800 bg-red-200 rounded-md mb-4 w-full px-3 py-2">
                             {{errorMessage}}
                         </div>
+
+                        <input v-model="formValues.id" name="id" />
+
                         <FormInput 
                             label="Nome" 
                             type="text"
@@ -98,7 +101,7 @@
         </div>
 
         <span class="flex w-full flex-row-reverse pb-8">
-            <Button v-on:click="modalOpen = true, modal_title = 'Novo usuário'">
+            <Button v-on:click="openModalAddUser">
                 <span class="px-4 space-x-2 flex items-center">
                     <font-awesome-icon icon="user-plus" />
                     <span>Adicionar novo usuário</span>
@@ -141,6 +144,7 @@ export default {
         errorMessage: false,
         
         formValues: {
+            id: '',
             name: '',
             password: '',
             email: '',
@@ -191,6 +195,12 @@ export default {
             }
         },
 
+        openModalAddUser() {
+            delete this.formValues.id;
+            this.modalOpen = true; 
+            this.modal_title = 'Novo usuário'
+        },
+
         openModalRemoveUser(user, i) {
             this.selectedUser = user;
             this.selectedUser.id = i;
@@ -213,14 +223,12 @@ export default {
             
             let url, action;
 
-            console.log(this.formValues);
-
             if ("id" in this.formValues) {
                 url = 'http://localhost:3000/edit-user';
-                action = 'add';
+                action = 'edit';
             } else {
                 url = 'http://localhost:3000/register-user';
-                action = 'save';
+                action = 'add';
             }
 
             this.errorMessage = false;
@@ -233,7 +241,7 @@ export default {
                     return;
                 }
 
-                if(action === 'add') {
+                if(action === 'edit') {
                     
                     this.users[data.resp.id] = data.resp;
 
@@ -244,7 +252,7 @@ export default {
                 }
 
                 this.$toast.open({
-                    message:  'Dados salvos com sucesso!',
+                    message:  data.message,
                     type: 'success',
                     position: 'top',
                     duration: 3000

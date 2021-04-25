@@ -16,12 +16,14 @@ app.use(bodyParser.urlencoded({
 
 let users = [
     {
+        id: 0,
         name: 'John Doe',
         email: 'usuariocomum@teste.com.br',
         accessLevel: '0',
         password: '123mudar',
     },
     {
+        id: 1,
         name: 'Lorem Ipsum',
         email: 'usarioadm@teste.com.br',
         accessLevel: '1',
@@ -113,7 +115,7 @@ app.post('/register-user', (req, res) => {
         req.body.id = parseInt(nextId.id + 1);
     } else {
         req.body.id = 0;
-    }
+    };
 
     users.push(req.body);
     return res.json({ message: 'Usuário salvo com sucesso', success: true, resp: req.body });
