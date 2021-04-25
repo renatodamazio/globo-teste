@@ -1,9 +1,11 @@
 <template>
     <div class="login-wrapper">
         <Card class="card-login">
-            <form @submit="handleSubmit">
+            <form @submit.prevent="handleSubmit">
                 <h1 class="text-xl font-black">Login</h1>
+                
                 <hr class="my-4"/>
+
                 <FormInput 
                     label="E-mail"
                     type="email"
@@ -28,12 +30,14 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 
 export default {
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            users: []
         }
     },
 
@@ -43,9 +47,21 @@ export default {
         Card: () => import('./Card')
     },
 
+    mounted() {
+        
+    },
+
     methods: {
-        handleSubmit(e) {
-            e.preventDefault();
+        handleSubmit() {
+            firebase
+                .auth()
+                .signInWithEmailAndPassword(this.email, this.password)
+                .then(() => {
+                    alert("Success Logged.");
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
         }
     }
 }

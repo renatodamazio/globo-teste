@@ -40,7 +40,7 @@
                 </template>
 
                 <div class="p-2">
-                    <form @submit="save">
+                    <form @submit="register">
                         <FormInput 
                             label="Nome" 
                             type="text"
@@ -101,6 +101,8 @@
     </div>
 </template>
 <script>
+import firebase from 'firebase';
+
 export default {
     data:() => ({
         modalOpen: false,
@@ -168,6 +170,20 @@ export default {
             this.formValues = Object.assign({}, user);
             this.formValues.id = i;
             this.modalOpen = true;
+        },
+
+        register(e) {
+            e.preventDefault();
+
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(this.formValues.email, this.formValues.password)
+                .then(() => {
+                    alert("Successly register, plase login.");
+                })
+                .catch((err) => {
+                    alert(err.message)
+                })
         },
 
         save(e) {

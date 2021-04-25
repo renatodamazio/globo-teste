@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div v-if="logged" class="wrapper flex flex-col flex-grow">
+    <div v-if="isLogged" class="wrapper flex flex-col flex-grow">
       <section class="flex flex-row h-full overflow-hidden rounded-md">
 
         <aside class="w-1/6">
@@ -8,7 +8,8 @@
             <ul>
               <li v-for="(link, i) in links" :key="i" :class='`${routerName == link.href ? "active" : ""}`'>
                 <router-link :to="link.href" v-if="allowAccess(link)">
-                  <Button 
+                  <Button
+                    v-on:click="clickEffect(link)"
                     variation="white"  
                     :className='`w-full rounded-md text-left px-3`'>
                       <span class="flex space-x-2 items-center px-2">  
@@ -73,7 +74,7 @@ export default {
     data() {
         return {
             active: 'dash',
-            logged: false,
+            isLogged: false,
             admin: 1,
             routerName: false,
             links: [
@@ -91,7 +92,7 @@ export default {
                 },
                 {
                   text: 'Login',
-                  href: '/login',
+                  href: '/',
                   icon: 'user-lock',
                   level: 0
                 }
@@ -100,7 +101,8 @@ export default {
     },
 
     created() {
-      this.setActiveMenu();    
+      this.setActiveMenu();   
+      this.setIsLogged(); 
     },
 
     components: {
@@ -114,12 +116,21 @@ export default {
     },
 
     methods: {
+      clickEffect(data) {
+        if (data.href === '/') {
+          this.isLogged = false;
+          localStorage.removeItem('isLogged');
+        }
+      },
+
+      setIsLogged() {
+        const isLogged = localStorage.getItem('isLogged');
+        this.isLogged = isLogged;
+      },
+
       setActiveMenu() {
         this.routerName = this.$route.path;
-
         document.title = this.$route.name;
-
-        console.log(this.$route)
       },
 
       allowAccess({ level }) {
