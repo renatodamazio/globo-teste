@@ -28,6 +28,7 @@ export default {
             active: 'dash',
             admin: 1,
             status: '',
+            api_url: process.env.VUE_APP_API_URL,
             links: [
                 {
                     text: 'Usuários',
@@ -57,7 +58,7 @@ export default {
 
     methods: {
         getClusterStatus() {
-            axios.get('http://localhost:3000/get-cluster-status')
+            axios.get(`${this.api_url}/get-cluster-status`)
             .then(({ data }) => {
                 this.status = data.status;
             })

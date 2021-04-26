@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="modal" :class="modalOpenRemoveUser ? 'modal-visible' : 'modal-hidden'">
-            <Card class="lg:w-1/4 w-full relative">
+            <Card class="lg:w-1/3 w-full relative">
                 <template slot:header>
                     <div class="p-2 w-full mb-3 border-b-2 font-black text-lg pt-4">
                         Remover Usuário
@@ -26,7 +26,7 @@
         </div>
 
         <div class="modal" :class="modalOpen ? 'modal-visible' : 'modal-hidden'">            
-            <Card class="lg:w-1/4 w-full relative">
+            <Card class="lg:w-1/3 w-full relative">
                 <template slot:header>
                     <div class="p-2 w-full mb-3 border-b-2 font-black text-lg py-4">
                         {{modal_title}}
@@ -45,7 +45,7 @@
                             {{errorMessage}}
                         </div>
 
-                        <input v-model="formValues.id" name="id" />
+                        <input type="hidden" v-model="formValues.id" name="id" />
 
                         <FormInput 
                             label="Nome" 
@@ -142,6 +142,7 @@ export default {
         modal_title: 'Novo usuário',
         selectedUser: '',
         errorMessage: false,
+        api_url: process.env.VUE_APP_API_URL,
         
         formValues: {
             id: '',
@@ -162,7 +163,7 @@ export default {
     },
 
     created() {
-        axios.get('http://localhost:3000/get-users')
+        axios.get(`${this.api_url}/get-users`)
         .then(({ data }) => {
             this.users = data;
         })
@@ -208,8 +209,12 @@ export default {
         },
 
         confirmRemoveUser(id) {
-            this.users.splice(id, 1);
-            this.modalOpenRemoveUser = false;
+            axios.delete(`${this.api_url}/delete-user/${id}`)
+            .then(() => {
+                this.users.splice(id, 1);
+                this.modalOpenRemoveUser = false;
+            })
+            .catch((err) => console.error(err))
         },
 
         openModalEditUser(user) {
@@ -224,10 +229,10 @@ export default {
             let url, action;
 
             if ("id" in this.formValues) {
-                url = 'http://localhost:3000/edit-user';
+                url = `${this.api_url}/edit-user`;
                 action = 'edit';
             } else {
-                url = 'http://localhost:3000/register-user';
+                url = `${this.api_url}/register-user`;
                 action = 'add';
             }
 

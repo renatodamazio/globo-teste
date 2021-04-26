@@ -5,6 +5,7 @@
 
         <aside class="w-1/6">
           <nav class="menu overflow-hidden">
+            <Avatar :user="user"/>
             <ul>
               <li v-for="(link, i) in links" :key="i" :class='`${routerName == link.href ? "active" : ""}`'>
                 <router-link :to="link.href" v-if="allowAccess(link)">
@@ -117,6 +118,7 @@ export default {
             active: 'dash',
             isLogged: false,
             admin: 1,
+            user: '',
             openMenu: false,
             page: 'Principal',
             routerName: false,
@@ -149,7 +151,8 @@ export default {
     },
 
     components: {
-      Login: () => import('@/components/Login')
+      Login: () => import('@/components/Login'),
+      Avatar: () => import('@/components/Avatar'),
     },
 
     watch: {
@@ -174,6 +177,7 @@ export default {
       setActiveMenu() {
         const user = JSON.parse(localStorage.getItem('user'));
 
+        this.user = user[0];
         this.admin = user[0].accessLevel;
 
         this.routerName = this.$route.path;

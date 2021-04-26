@@ -9,16 +9,15 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login,
       meta: { layout: "default" }
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-      meta: { layout: "default" }
+        path: '/',
+        name: 'Principal',
+        component: Dash
     },
     {
         path: '/dash',

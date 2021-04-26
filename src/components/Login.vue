@@ -37,6 +37,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            api_url: process.env.VUE_APP_API_URL,
             erroMessage: false,
             email: 'usarioadm@teste.com.br',
             password: '123mudar',
@@ -52,7 +53,7 @@ export default {
 
     methods: {
         handleSubmit() {
-            axios.post('http://localhost:3000/login', {
+            axios.post(`${this.api_url}/login`, {
                 email: this.email,
                 password: this.password
             })

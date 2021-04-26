@@ -121,7 +121,7 @@ app.post('/register-user', (req, res) => {
     return res.json({ message: 'Usuário salvo com sucesso', success: true, resp: req.body });
 });
 
-app.delete('/delete-user', (req, res) => {
+app.delete('/delete-user/:id', (req, res) => {
     users.splice(req.params.id, 1);
     return res.json({ message: 'Usuário removido', success: true, resp: [req.params.id] });
 });

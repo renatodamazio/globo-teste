@@ -19,6 +19,7 @@
             height: '300',
             type: 'line',
             dataFormat: 'json',
+            api_url: process.env.VUE_APP_API_URL,
             dataSource: {
                 "chart": {
                     "bgColor": "FFFFFF",
@@ -39,7 +40,7 @@
 
         methods: {
             getApiData() {
-                axios.get(`http://localhost:3000/${this.apiurl}`)
+                axios.get(`${this.api_url}/${this.apiurl}`)
                 .then(({ data }) => {
                     let dataSource = [];
 
