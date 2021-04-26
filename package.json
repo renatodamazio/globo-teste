@@ -18,7 +18,6 @@
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "firebase": "^8.4.2",
     "fusioncharts": "^3.16.0",
     "postcss": "7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
