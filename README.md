@@ -1,24 +1,29 @@
 # back-office
+## Detalhes:
+Projeto criado em Vue.
+- Tailwind
+- Axios
+- Node
+- Express
+- AWS API
+- LocalStorage
+- Responsive Web
+- Vue Toast
+- Fusion Chart
+- Vue Router
+- Font-Awesome
 
-## Project setup
-```
+## Instalando o projeto:
 yarn install
-```
 
-### Compiles and hot-reloads for development
-```
+## Iniciando o backend:
+yarn api
+- Deve executar na porta `3000`
+
+## Iniciando o front:
 yarn serve
-```
+- Deve executar na porta `8080`
 
-### Compiles and minifies for production
-```
-yarn build
-```
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Variavel de ambiente:
+.env, tem o a url do servidor, `localhost:3000`.
